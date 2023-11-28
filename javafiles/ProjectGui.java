@@ -1,6 +1,9 @@
 
+
 import java.awt.Color;
 import java.sql.*;
+import java.text.SimpleDateFormat;
+
 import javax.swing.*;
 import javax.swing.border.CompoundBorder;
 import javax.swing.table.DefaultTableModel;
@@ -10,6 +13,8 @@ import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
+import java.util.Date;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class ProjectGui {
 
@@ -33,9 +38,14 @@ class MyFrameClass extends JFrame {
 	JMenuBar menuBar;
 	JMenu menu;
 	JMenu history;
-	JMenu topten;
+	JMenu topten; 
+	JMenu allMoviesSeries;
+	JMenu allMembers;
 	JMenuItem m1, m2, m3, m4, m5, m6, h1;
 
+	
+	JPanel streamButtonPanel;
+	private JButton streamButton;
 	String role;
 
 	String loggedInUserId;
@@ -101,9 +111,12 @@ class MyFrameClass extends JFrame {
 		onHover mouseAdapter = new onHover();
 		loginButton.addActionListener(lhandler);
 		loginButton.addMouseListener(mouseAdapter);
-
-
 		
+		
+		streamButtonPanel = new JPanel();
+		streamButtonPanel.setVisible(false);
+
+
 		
 		loginButton.setPreferredSize(new Dimension(80, 25)); // Adjust width and height as needed
 
@@ -169,6 +182,14 @@ class MyFrameClass extends JFrame {
 		loginPanel.add(idField);
 		loginPanel.add(pwdLabel);
 		loginPanel.add(pwdField);
+		
+		streamButton = new JButton("Stream");
+		streamButton.addActionListener(new ActionListener() {
+		    @Override
+		    public void actionPerformed(ActionEvent e) {
+		        streamSelectedMovie();
+		    }
+		});
 
 		// Panel to hold both the loginPanel and loginButton
 		JPanel northPanel = new JPanel(new BorderLayout());
@@ -178,6 +199,7 @@ class MyFrameClass extends JFrame {
 
 		// Add the northPanel to the NORTH region of the BorderLayout
 		add(northPanel, BorderLayout.NORTH);
+		add(streamButtonPanel, BorderLayout.SOUTH);
 
 		setupMainFrame();
 	}
@@ -289,8 +311,15 @@ class MyFrameClass extends JFrame {
 		menu = new JMenu("Streams");
 		history = new JMenu("Streaming trend 24h");
 		topten = new JMenu("Top Ten");
+		
+	    allMoviesSeries = new JMenu("Movies / Series");
+		allMembers = new JMenu("Members");
+		
 
 		StreamsMenuHandler streamsHandler = new StreamsMenuHandler(connection, table, tableModel, scroller, this);
+		
+		
+		
 
 		menu.setBorder(new CompoundBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.BLACK),
 				BorderFactory.createEmptyBorder(5, 5, 5, 5)));
@@ -299,6 +328,12 @@ class MyFrameClass extends JFrame {
 				BorderFactory.createEmptyBorder(5, 5, 5, 5)));
 
 		topten.setBorder(new CompoundBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.BLACK),
+				BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+		
+		allMoviesSeries.setBorder(new CompoundBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.BLACK),
+				BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+
+		allMembers.setBorder(new CompoundBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.BLACK),
 				BorderFactory.createEmptyBorder(5, 5, 5, 5)));
 
 		try {
@@ -324,6 +359,8 @@ class MyFrameClass extends JFrame {
 					JOptionPane.ERROR_MESSAGE);
 		}
 		
+		
+		
 		JMenuItem recentStreams = new JMenuItem("Top Streams Today");
         history.add(recentStreams);
         DailyMenuHandler dailyHandler = new DailyMenuHandler(connection, table,tableModel, scroller, this);
@@ -333,11 +370,27 @@ class MyFrameClass extends JFrame {
         topten.add(topTenItem);
         TopTenHandler tenHandler = new TopTenHandler(connection, table,tableModel, scroller, this);
         topTenItem.addActionListener(tenHandler);
+        
+        JMenuItem allMemberes = new JMenuItem("Show All Members");
+        allMembers.add(allMemberes);
+        AdminHandler adminHandler = new AdminHandler(connection,table,tableModel,scroller,this);
+        allMemberes.addActionListener(adminHandler);
+        
+        JMenuItem allMoviesandSeries = new JMenuItem("Show All Movies/Series");
+        allMoviesSeries.add(allMoviesandSeries);
+        allMoviesandSeries.addActionListener(adminHandler);
+        
+        
+        
+        
 
 
 		menuBar.add(menu);
 		menuBar.add(history);
 		menuBar.add(topten);
+		menuBar.add(allMoviesSeries);
+		menuBar.add(allMembers);
+		
 		setJMenuBar(menuBar);
 
 		validate();
@@ -360,10 +413,14 @@ class MyFrameClass extends JFrame {
 
 		loginPanel.setVisible(false);
 		buttonPanel.setVisible(false);
+		
+		streamButtonPanel.add(streamButton);
+		streamButtonPanel.setVisible(true);
 
 		menuBar = new JMenuBar();
 		menu = new JMenu("Search By");
 		history = new JMenu("Streaming History");
+		
 
 		m1 = new JMenuItem("Title");
 		m2 = new JMenuItem("Genre");
@@ -417,6 +474,90 @@ class MyFrameClass extends JFrame {
 
 		validate();
 		repaint();
+	}
+	
+	private void streamSelectedMovie() 
+	{
+	    int selectedRow = table.getSelectedRow();
+	    if (selectedRow >= 0) {
+	        String movieTitle = tableModel.getValueAt(selectedRow, 0).toString(); 
+	        JOptionPane.showMessageDialog(this, "Streaming: " + movieTitle);
+	        String userEmail = loggedInUserId; 
+	        insertIntoDatabase(movieTitle, userEmail);
+	    } 
+	    else 
+	    {
+	        JOptionPane.showMessageDialog(this, "Please select a movie to stream.");
+	    }
+	}
+
+	private void insertIntoDatabase(String movieTitle, String userEmail) {
+	    Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
+
+	    Connection conn = null;
+	    PreparedStatement stmt1 = null;
+	    PreparedStatement stmt2 = null;
+
+	    try {
+	        conn = DriverManager.getConnection(url, "alvaro", "groupProject1");
+	        conn.setAutoCommit(false); // Start transaction
+	        
+	        String timestamp = generateUniqueTimestampID();
+
+	        // Insert into timestamp table
+	        String sqlTimestamp = "INSERT INTO timestamp (timeStampID, stream_datetime) VALUES (?, ?)";
+	        stmt1 = conn.prepareStatement(sqlTimestamp);
+	        stmt1.setString(1, timestamp); // timeStampID
+	        stmt1.setTimestamp(2, currentTimestamp);
+	        stmt1.executeUpdate();
+
+	        // Insert into streams table
+	        String sqlStreams = "INSERT INTO streams (title, timeStampID, email) VALUES (?, ?, ?)";
+	        stmt2 = conn.prepareStatement(sqlStreams);
+	        stmt2.setString(1, movieTitle);
+	        stmt2.setString(2, timestamp); //timeStampID
+	        stmt2.setString(3, loggedInUserId);
+	        stmt2.executeUpdate();
+
+	        conn.commit(); // Commit transaction
+	    } catch (SQLException e) {
+	        if (conn != null) {
+	            try {
+	                conn.rollback(); // Rollback transaction in case of error
+	            } catch (SQLException ex) {
+	                ex.printStackTrace();
+	            }
+	        }
+	        e.printStackTrace();
+	    } finally {
+	        // Clean-up
+	        try {
+	            if (stmt1 != null) stmt1.close();
+	            if (stmt2 != null) stmt2.close();
+	            if (conn != null) conn.close();
+	        } catch (SQLException ex) {
+	            ex.printStackTrace();
+	        }
+	    }
+	}
+
+	private String generateUniqueTimestampID() {
+	    // Format the current time to a specific pattern
+	    SimpleDateFormat dateFormat = new SimpleDateFormat("HHmmssS");
+	    String timeComponent = dateFormat.format(new Date());
+
+	    // Ensure the string is exactly 7 characters long
+	    if (timeComponent.length() > 7) {
+	        timeComponent = timeComponent.substring(0, 7);
+	    } else {
+	        while (timeComponent.length() < 7) {
+	            // Append a random digit if the string is shorter than 7 characters
+	            timeComponent += ThreadLocalRandom.current().nextInt(0, 10);
+	        }
+	    }
+
+	    System.out.println(timeComponent);
+	    return timeComponent;
 	}
 
 	// inner class for handling window event
