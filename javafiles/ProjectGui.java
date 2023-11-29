@@ -1,5 +1,6 @@
 
 
+
 import java.awt.Color;
 import java.sql.*;
 import java.text.SimpleDateFormat;
@@ -41,7 +42,8 @@ class MyFrameClass extends JFrame {
 	JMenu topten;
 	JMenu allMoviesSeries;
 	JMenu allMembers;
-	JMenuItem m1, m2, m3, m4, m5, m6, m7, h1, e1;
+	JMenu loginOut;
+	JMenuItem m1, m2, m3, m4, m5, m6, m7, h1, e1, loginOutConfirm;
 
 	JPanel streamButtonPanel;
 	private JButton streamButton;
@@ -82,7 +84,7 @@ class MyFrameClass extends JFrame {
 				Component c = super.prepareRenderer(renderer, row, column);
 				if (!isRowSelected(row)) {
 					c.setBackground(row % 2 == 0 ? new Color(230, 230, 250) : new Color(245, 245, 255)); // Light row
-																											// colors
+					// colors
 					c.setForeground(Color.BLACK); // Text color
 				} else {
 					c.setBackground(new Color(173, 216, 230)); // Color when a row is selected
@@ -92,7 +94,8 @@ class MyFrameClass extends JFrame {
 		};
 
 		JTableHeader tableHeader = table.getTableHeader();
-		tableHeader.setBackground(new Color(173, 216, 230)); // Light header background
+		// tableHeader.setBackground(new Color(173, 216, 230)); // Light header
+		// background
 		tableHeader.setForeground(Color.BLACK); // Header text color
 
 		tableModel = new DefaultTableModel();
@@ -146,6 +149,9 @@ class MyFrameClass extends JFrame {
 		loginPanel.setLayout(new GridLayout(4, 1, 0, 5));
 
 		// STYLING
+		tableHeader.setBackground(new Color(57, 100, 195));
+		tableHeader.setForeground(Color.WHITE);
+		tableHeader.setFont(new Font("Tahoma", Font.BOLD, 12));
 
 		// setUndecorated(true);
 
@@ -307,6 +313,36 @@ class MyFrameClass extends JFrame {
 		allMoviesSeries = new JMenu("Movies / Series");
 		allMembers = new JMenu("Members");
 
+		menuBar.setBackground(new Color(69, 116, 222));
+		menuBar.setFont(new Font("Tahoma", Font.BOLD, 12));
+		menu.setForeground(Color.WHITE);
+		menu.setFont(new Font("Tahoma", Font.BOLD, 12));
+		menu.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+		history.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+		history.setForeground(Color.WHITE);
+		history.setFont(new Font("Tahoma", Font.BOLD, 12));
+		topten.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+		topten.setForeground(Color.WHITE);
+		topten.setFont(new Font("Tahoma", Font.BOLD, 12));
+		loginOut = new JMenu("Login Out");
+		loginOutConfirm = new JMenuItem("Confirm Log Out?");
+
+		allMoviesSeries.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+		allMoviesSeries.setForeground(Color.WHITE);
+		allMoviesSeries.setFont(new Font("Tahoma", Font.BOLD, 12));
+		allMembers.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+		allMembers.setForeground(Color.WHITE);
+		allMembers.setFont(new Font("Tahoma", Font.BOLD, 12));
+
+		// Styling
+		loginOut.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+		loginOut.setForeground(Color.WHITE);
+		loginOut.setFont(new Font("Tahoma", Font.BOLD, 12));
+		loginOutConfirm.setForeground(Color.WHITE);
+		loginOutConfirm.setBackground(new Color(69, 116, 222));
+		loginOutConfirm.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+		loginOutConfirm.setFont(new Font("Tahoma", Font.BOLD, 12));
+
 		StreamsMenuHandler streamsHandler = new StreamsMenuHandler(connection, table, tableModel, scroller, this);
 
 		menu.setBorder(new CompoundBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.BLACK),
@@ -318,6 +354,9 @@ class MyFrameClass extends JFrame {
 		topten.setBorder(new CompoundBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.BLACK),
 				BorderFactory.createEmptyBorder(5, 5, 5, 5)));
 
+		loginOut.setBorder(new CompoundBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.BLACK),
+				BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+
 		allMoviesSeries.setBorder(new CompoundBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.BLACK),
 				BorderFactory.createEmptyBorder(5, 5, 5, 5)));
 
@@ -326,37 +365,66 @@ class MyFrameClass extends JFrame {
 
 		JMenuItem menuItem = new JMenuItem("Streams");
 		menuItem.addActionListener(streamsHandler);
+		menuItem.setForeground(Color.WHITE);
+		menuItem.setBackground(new Color(69, 116, 222));
+		menuItem.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+		menuItem.setFont(new Font("Tahoma", Font.BOLD, 12));
 		menu.add(menuItem);
 
 		JMenuItem noStreamItem = new JMenuItem("Titles With 0 Streams");
+		noStreamItem.setForeground(Color.WHITE);
+		noStreamItem.setBackground(new Color(69, 116, 222));
+		noStreamItem.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+		noStreamItem.setFont(new Font("Tahoma", Font.BOLD, 12));
 		topten.add(noStreamItem);
 		NoStreamHandler noHandler = new NoStreamHandler(connection, table, tableModel, scroller, this);
 		noStreamItem.addActionListener(noHandler);
 
 		JMenuItem recentStreams = new JMenuItem("Top Streams Today");
+		recentStreams.setForeground(Color.WHITE);
+		recentStreams.setBackground(new Color(69, 116, 222));
+		recentStreams.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+		recentStreams.setFont(new Font("Tahoma", Font.BOLD, 12));
 		history.add(recentStreams);
 		DailyMenuHandler dailyHandler = new DailyMenuHandler(connection, table, tableModel, scroller, this);
 		recentStreams.addActionListener(dailyHandler);
 
 		JMenuItem topTenItem = new JMenuItem("Top Ten Streams");
+		topTenItem.setForeground(Color.WHITE);
+		topTenItem.setBackground(new Color(69, 116, 222));
+		topTenItem.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+		topTenItem.setFont(new Font("Tahoma", Font.BOLD, 12));
 		topten.add(topTenItem);
 		TopTenHandler tenHandler = new TopTenHandler(connection, table, tableModel, scroller, this);
 		topTenItem.addActionListener(tenHandler);
 
 		JMenuItem allMemberes = new JMenuItem("Show All Members");
+		allMemberes.setForeground(Color.WHITE);
+		allMemberes.setBackground(new Color(69, 116, 222));
+		allMemberes.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+		allMemberes.setFont(new Font("Tahoma", Font.BOLD, 12));
 		allMembers.add(allMemberes);
 		AdminHandler adminHandler = new AdminHandler(connection, table, tableModel, scroller, this);
 		allMemberes.addActionListener(adminHandler);
 
 		JMenuItem allMoviesandSeries = new JMenuItem("Show All Movies/Series");
+		allMoviesandSeries.setForeground(Color.WHITE);
+		allMoviesandSeries.setBackground(new Color(69, 116, 222));
+		allMoviesandSeries.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+		allMoviesandSeries.setFont(new Font("Tahoma", Font.BOLD, 12));
 		allMoviesSeries.add(allMoviesandSeries);
 		allMoviesandSeries.addActionListener(adminHandler);
+
+		LoginOutHandler logHandler = new LoginOutHandler(connection, table, tableModel, scroller, this, loggedInUserId);
+		loginOutConfirm.addActionListener(logHandler);
 
 		menuBar.add(menu);
 		menuBar.add(history);
 		menuBar.add(topten);
 		menuBar.add(allMoviesSeries);
 		menuBar.add(allMembers);
+		loginOut.add(loginOutConfirm);
+		menuBar.add(loginOut);
 
 		setJMenuBar(menuBar);
 
@@ -398,7 +466,71 @@ class MyFrameClass extends JFrame {
 		m7 = new JMenuItem("Awards won");
 		h1 = new JMenuItem("View History");
 		e1 = new JMenuItem("Edit Profile");
-		
+		loginOut = new JMenu("Login Out");
+		loginOutConfirm = new JMenuItem("Confirm Log Out?");
+
+		// STYLING
+		menuBar.setBackground(new Color(69, 116, 222));
+		menu.setForeground(Color.WHITE);
+		menu.setFont(new Font("Tahoma", Font.BOLD, 12));
+		menu.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+		history.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+		history.setForeground(Color.WHITE);
+		history.setFont(new Font("Tahoma", Font.BOLD, 12));
+		loginOut.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+		loginOut.setForeground(Color.WHITE);
+		loginOut.setFont(new Font("Tahoma", Font.BOLD, 12));
+		editProfile.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+		editProfile.setForeground(Color.WHITE);
+		editProfile.setFont(new Font("Tahoma", Font.BOLD, 12));
+		m1.setForeground(Color.WHITE);
+		m1.setBackground(new Color(69, 116, 222));
+		m1.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+		m1.setFont(new Font("Tahoma", Font.BOLD, 12));
+		m2.setForeground(Color.WHITE);
+		m2.setBackground(new Color(69, 116, 222));
+		m2.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+		m2.setFont(new Font("Tahoma", Font.BOLD, 12));
+		m3.setForeground(Color.WHITE);
+		m3.setBackground(new Color(69, 116, 222));
+		m3.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+		m3.setFont(new Font("Tahoma", Font.BOLD, 12));
+		m4.setForeground(Color.WHITE);
+		m4.setBackground(new Color(69, 116, 222));
+		m4.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+		m4.setFont(new Font("Tahoma", Font.BOLD, 12));
+		m5.setForeground(Color.WHITE);
+		m5.setBackground(new Color(69, 116, 222));
+		m5.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+		m5.setFont(new Font("Tahoma", Font.BOLD, 12));
+		m6.setForeground(Color.WHITE);
+		m6.setBackground(new Color(69, 116, 222));
+		m6.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+		m6.setFont(new Font("Tahoma", Font.BOLD, 12));
+		m7.setForeground(Color.WHITE);
+		m7.setBackground(new Color(69, 116, 222));
+		m7.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+		m7.setFont(new Font("Tahoma", Font.BOLD, 12));
+		h1.setForeground(Color.WHITE);
+		h1.setBackground(new Color(69, 116, 222));
+		h1.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+		h1.setFont(new Font("Tahoma", Font.BOLD, 12));
+		e1.setForeground(Color.WHITE);
+		e1.setBackground(new Color(69, 116, 222));
+		e1.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+		e1.setFont(new Font("Tahoma", Font.BOLD, 12));
+		loginOutConfirm.setForeground(Color.WHITE);
+		loginOutConfirm.setBackground(new Color(69, 116, 222));
+		loginOutConfirm.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+		loginOutConfirm.setFont(new Font("Tahoma", Font.BOLD, 12));
+
+		// Button Stlying
+		streamButton.setBackground(new Color(57, 100, 195));
+		streamButton.setFont(new Font("Tahoma", Font.BOLD, 12));
+		streamButton.setForeground(Color.BLACK);
+		streamButton.setForeground(Color.WHITE);
+		streamButton.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 2),
+				BorderFactory.createLineBorder(new Color(57, 100, 195), 12)));
 
 		TitleMenuHandler titleHandler = new TitleMenuHandler(connection, table, tableModel, scroller, this);
 		GenreMenuHandler genreHandler = new GenreMenuHandler(connection, table, tableModel, scroller, this);
@@ -408,8 +540,9 @@ class MyFrameClass extends JFrame {
 				loggedInUserId);
 		SequelMenuHandler sequelHandler = new SequelMenuHandler(connection, table, tableModel, scroller, this);
 		AllKeywordHandler allHandler = new AllKeywordHandler(connection, table, tableModel, scroller, this);
-		AwardsHandler awardsHandler = new AwardsHandler(connection, table , tableModel , scroller, this);
+		AwardsHandler awardsHandler = new AwardsHandler(connection, table, tableModel, scroller, this);
 		EditProfileHandler editHandler = new EditProfileHandler(loggedInUserId, connection);
+		LoginOutHandler logHandler = new LoginOutHandler(connection, table, tableModel, scroller, this, loggedInUserId);
 
 		m1.addActionListener(titleHandler);
 		m2.addActionListener(genreHandler);
@@ -420,6 +553,7 @@ class MyFrameClass extends JFrame {
 		m7.addActionListener(awardsHandler);
 		h1.addActionListener(historyHandler);
 		e1.addActionListener(editHandler);
+		loginOutConfirm.addActionListener(logHandler);
 
 		menu.add(m1);
 		menu.add(new JSeparator());
@@ -437,6 +571,7 @@ class MyFrameClass extends JFrame {
 
 		history.add(h1);
 		editProfile.add(e1);
+		loginOut.add(loginOutConfirm);
 
 		menu.setBorder(new CompoundBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.BLACK),
 				BorderFactory.createEmptyBorder(5, 5, 5, 5)));
@@ -450,6 +585,7 @@ class MyFrameClass extends JFrame {
 		menuBar.add(menu);
 		menuBar.add(history);
 		menuBar.add(editProfile);
+		menuBar.add(loginOut);
 
 		setJMenuBar(menuBar);
 
@@ -555,5 +691,3 @@ class MyFrameClass extends JFrame {
 	}
 
 }
-
-
