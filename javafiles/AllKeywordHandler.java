@@ -46,9 +46,10 @@ class AllKeywordHandler implements ActionListener {
 		if (optionChosen == JOptionPane.OK_OPTION && !searchText.isEmpty()) {
 			
 			try {
-				String query = "Select V.title, V.genre, V.release_date, V.hyperlink, CD.name AS Director_Name, DC.name AS Actor_Name "
+				String query = "Select V.title, V.genre, V.release_date, M.awards_won, V.hyperlink, CD.name AS Director_Name, DC.name AS Actor_Name "
                         + "From video V natural join videodirector VD Join cast_director CD on VD.cast_id = CD.cast_id "
                         + "join video_cast VC on V.title = VC.title join cast_director DC on VC.cast_id = DC.cast_id "
+                        + "JOIN movies M on M.title = V.title "
                         + "Where V.title LIKE ? OR V.genre LIKE ? OR CD.name LIKE ? OR DC.name LIKE ?";
 				PreparedStatement statement = connection.prepareStatement(query);
 				statement.setString(1, "%" + searchText + "%");
