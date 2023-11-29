@@ -42,7 +42,7 @@ class GenreMenuHandler implements ActionListener {
 		if (optionChosen == JOptionPane.OK_OPTION) {
 			String selectedGenre = (String) genreComboBox.getSelectedItem();
 			try {
-				String query = "SELECT title, genre FROM video WHERE genre LIKE ?";
+				String query = "SELECT title, genre, release_date, hyperlink FROM video WHERE genre LIKE ?";
 				PreparedStatement statement = connection.prepareStatement(query);
 				statement.setString(1, "%" + selectedGenre + "%");
 
