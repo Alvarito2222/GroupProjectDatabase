@@ -47,7 +47,7 @@ class TitleMenuHandler implements ActionListener {
 		if (optionChosen == JOptionPane.OK_OPTION && !searchText.isEmpty()) {
 			
 			try {
-				String query = "SELECT title, genre , release_date , hyperlink FROM video WHERE title LIKE ?";
+				String query = "SELECT title, genre , release_date , hyperlink , awards_won FROM video NATURAL JOIN movies WHERE title LIKE ?";
 				PreparedStatement statement = connection.prepareStatement(query);
 				statement.setString(1, "%" + searchText + "%");
 
