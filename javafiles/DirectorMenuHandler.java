@@ -46,7 +46,7 @@ class DirectorMenuHandler implements ActionListener {
 		if (optionChosen == JOptionPane.OK_OPTION && !searchText.isEmpty()) {
 			
 			try {
-				String query = "SELECT title, name FROM videodirector NATURAL JOIN cast_director WHERE position = 'Director' AND name LIKE ?";
+				String query = "SELECT title, name, genre, release_date, hyperlink FROM videodirector NATURAL JOIN cast_director WHERE position = 'Director' AND name LIKE ?";
 				PreparedStatement statement = connection.prepareStatement(query);
 				statement.setString(1, "%" + searchText + "%");
 
