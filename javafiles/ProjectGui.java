@@ -38,10 +38,11 @@ class MyFrameClass extends JFrame {
 	JMenuBar menuBar;
 	JMenu menu;
 	JMenu history;
+	JMenu editProfile;
 	JMenu topten; 
 	JMenu allMoviesSeries;
 	JMenu allMembers;
-	JMenuItem m1, m2, m3, m4, m5, m6, h1;
+	JMenuItem m1, m2, m3, m4, m5, m6, h1, e1;
 
 	
 	JPanel streamButtonPanel;
@@ -420,7 +421,7 @@ class MyFrameClass extends JFrame {
 		menuBar = new JMenuBar();
 		menu = new JMenu("Search By");
 		history = new JMenu("Streaming History");
-		
+		editProfile = new JMenu("Edit Profile");		
 
 		m1 = new JMenuItem("Title");
 		m2 = new JMenuItem("Genre");
@@ -429,6 +430,7 @@ class MyFrameClass extends JFrame {
 		m5 = new JMenuItem("Prequel/Sequel");
 		m6 = new JMenuItem("All");
 		h1 = new JMenuItem("View History");
+		e1 = new JMenuItem("Edit Profile");
 
 		TitleMenuHandler titleHandler = new TitleMenuHandler(connection, table, tableModel, scroller, this);
 		GenreMenuHandler genreHandler = new GenreMenuHandler(connection, table, tableModel, scroller, this);
@@ -438,6 +440,7 @@ class MyFrameClass extends JFrame {
 				loggedInUserId);
 		SequelMenuHandler sequelHandler = new SequelMenuHandler(connection, table, tableModel, scroller, this);
 		AllKeywordHandler allHandler = new AllKeywordHandler(connection, table, tableModel, scroller, this);
+		EditProfileHandler editHandler = new EditProfileHandler(loggedInUserId, connection);
 
 		m1.addActionListener(titleHandler);
 		m2.addActionListener(genreHandler);
@@ -446,6 +449,7 @@ class MyFrameClass extends JFrame {
 		m5.addActionListener(sequelHandler);
 		m6.addActionListener(allHandler);
 		h1.addActionListener(historyHandler);
+		e1.addActionListener(editHandler);
 
 		menu.add(m1);
 		menu.add(new JSeparator());
@@ -460,15 +464,20 @@ class MyFrameClass extends JFrame {
 		menu.add(m6);
 
 		history.add(h1);
+		editProfile.add(e1);
 
 		menu.setBorder(new CompoundBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.BLACK),
 				BorderFactory.createEmptyBorder(5, 5, 5, 5)));
 
 		history.setBorder(new CompoundBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.BLACK),
 				BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+		
+		editProfile.setBorder(new CompoundBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.BLACK),
+				BorderFactory.createEmptyBorder(5, 5, 5, 5)));
 
 		menuBar.add(menu);
 		menuBar.add(history);
+		menuBar.add(editProfile);
 
 		setJMenuBar(menuBar);
 
@@ -574,7 +583,5 @@ class MyFrameClass extends JFrame {
 	}
 
 }
-
-
 
 
