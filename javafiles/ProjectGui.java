@@ -337,28 +337,9 @@ class MyFrameClass extends JFrame {
 		allMembers.setBorder(new CompoundBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.BLACK),
 				BorderFactory.createEmptyBorder(5, 5, 5, 5)));
 
-		try {
-
-			Statement statement = connection.createStatement();
-			String query = "SELECT DISTINCT title FROM streams";
-			ResultSet rs = statement.executeQuery(query);
-
-			// Iterate over the results and add each movie as a menu item
-			while (rs.next()) {
-				String movieTitle = rs.getString("title");
-				JMenuItem menuItem = new JMenuItem(movieTitle);
-
-				menuItem.setActionCommand(movieTitle); // Set the action command to the movie title
-				menuItem.addActionListener(streamsHandler);
-
-				menu.add(menuItem);
-				menu.add(new JSeparator()); // Add a separator between menu items
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, "Error retrieving streaming data!", "Database Error",
-					JOptionPane.ERROR_MESSAGE);
-		}
+		JMenuItem menuItem = new JMenuItem("Streams");
+        menuItem.addActionListener(streamsHandler);
+        menu.add(menuItem);
 		
 		
 		JMenuItem noStreamItem = new JMenuItem("Titles With 0 Streams");
@@ -588,4 +569,5 @@ class MyFrameClass extends JFrame {
 	}
 
 }
+
 
