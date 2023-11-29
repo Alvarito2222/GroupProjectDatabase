@@ -47,7 +47,7 @@ class ActorMenuHandler implements ActionListener {
 			
 			// Perform SQL query with the entered text
 			try {
-				String query = "SELECT title, name, genre, release_date, hyperlink FROM video_cast NATURAL JOIN cast_director WHERE position = 'Actor' AND name LIKE ?";
+				String query = "SELECT VC.title, name, genre, release_date, hyperlink FROM video_cast VC NATURAL JOIN cast_director JOIN video ON VC.title = video.title WHERE position = 'Actor' AND name LIKE ?";
 				PreparedStatement statement = connection.prepareStatement(query);
 				statement.setString(1, "%" + searchText + "%");
 
