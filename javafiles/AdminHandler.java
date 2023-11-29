@@ -6,14 +6,18 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.math.BigDecimal;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Types;
 
 import javax.swing.Box;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -280,10 +284,17 @@ private void addNewMember() {
     }
 }
 
+private void setStringOrNull(CallableStatement stmt, int parameterIndex, String value) throws SQLException {
+    if (value == null || value.trim().isEmpty()) {
+        stmt.setNull(parameterIndex, Types.VARCHAR);
+    } else {
+        stmt.setString(parameterIndex, value);
+    }
+}
+
 private void addNewMovie() {
     JTextField titleField = new JTextField(10);
     JTextField releaseDateField = new JTextField(10);
-    JTextField genreField = new JTextField(10);
     JTextField hyperLinkField = new JTextField(10);
     JTextField castIdField = new JTextField(10);
     JTextField directorIdField = new JTextField(10);
@@ -295,6 +306,10 @@ private void addNewMovie() {
     JTextField castCountryField = new JTextField(10);
 
     JPanel panel = new JPanel(new GridLayout(0,1));
+    
+    String[] genreOptions = { "Drama", "Action", "Sci-Fi", "History", "Adventure", "Crime", "Animation", "Fantasy",
+	"Romance" };
+JComboBox<String> genreComboBox = new JComboBox<>(genreOptions);
 
     // Add components to the panel using GridBagConstraints
    panel.add(new JLabel("Title:"));
@@ -302,7 +317,7 @@ private void addNewMovie() {
    panel.add(new JLabel("Release Date:"));
    panel.add(releaseDateField);
    panel.add(new JLabel("Genre:"));
-   panel.add(genreField);
+   panel.add(genreComboBox);
    panel.add(new JLabel("HyperLink:"));
    panel.add(hyperLinkField);
    panel.add(new JLabel("Cast Id:"));
@@ -325,21 +340,40 @@ private void addNewMovie() {
     int result = JOptionPane.showConfirmDialog(null, panel, "Enter Movie Details", JOptionPane.OK_CANCEL_OPTION);
     if (result == JOptionPane.OK_OPTION) {
         
-        String title = titleField.getText();
-        String releaseDate = releaseDateField.getText();
-        String genre = genreField.getText();
-        String hyperlink = hyperLinkField.getText();
-        String castId = castIdField.getText();
-        String directorId = directorIdField.getText();
-        String prequel = prequelField.getText();
-        String sequel =sequelField.getText();
-        String castName = castNameField.getText();
-        String castPosition = castPositionField.getText();
-        String castProvince = castProvinceField.getText();
-        String castCountry = castCountryField.getText();
         
+        
+        
+        try {
+            String callProcedure = "{CALL AddMovie(?,?,?,?,?,?,?,?,?,?,?,?)}";
+            CallableStatement stmt = connection.prepareCall(callProcedure);
+
+            // Set parameters using the utility method
+            setStringOrNull(stmt, 1, titleField.getText());
+            setStringOrNull(stmt, 2, releaseDateField.getText());
+            setStringOrNull(stmt, 3, genreComboBox.getSelectedItem().toString());
+            setStringOrNull(stmt, 4, hyperLinkField.getText());
+            setStringOrNull(stmt, 5, castIdField.getText());
+            setStringOrNull(stmt, 6, directorIdField.getText());
+            setStringOrNull(stmt, 7, prequelField.getText());
+            setStringOrNull(stmt, 8, sequelField.getText());
+            setStringOrNull(stmt, 9, castNameField.getText());
+            setStringOrNull(stmt, 10, castPositionField.getText());
+            setStringOrNull(stmt, 11, castProvinceField.getText());
+            setStringOrNull(stmt, 12, castCountryField.getText());
+
+            
+            stmt.execute();
+            int updateCount = stmt.getUpdateCount();
+            if (updateCount > 0) {
+                JOptionPane.showMessageDialog(null, "Movie added successfully!");
+            } else {
+                JOptionPane.showMessageDialog(null, "No changes were made.");
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error updating movie data: " + ex.getMessage());
+        }
     }
 }
-
 }
 
