@@ -6,6 +6,7 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.Statement;
 import java.math.BigDecimal;
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -13,6 +14,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Types;
 
 import javax.swing.Box;
@@ -252,37 +254,78 @@ private void removeMember(Object memberID) {
 
 private void addNewMember() {
     JTextField emailField = new JTextField(10);
-    JTextField planIdField = new JTextField(10);
+    JTextField planIDField = new JTextField(10);
     JTextField passwordField = new JTextField(10);
+    JTextField nameField = new JTextField(10);
     JTextField addressField = new JTextField(10);
     JTextField phoneField = new JTextField(10);
+    String[] planTypeOptions = { "Individual", "Family" }; 
+    JComboBox<String> planTypeComboBox = new JComboBox<>(planTypeOptions);
+    JTextField numberOfLoginsField = new JTextField(10);
 
-    JPanel panel = new JPanel(new GridLayout(0,1));
-   
-
-    // Adding each component to the panel with constraints
+    JPanel panel = new JPanel(new GridLayout(0, 1));
     panel.add(new JLabel("Email:"));
     panel.add(emailField);
     panel.add(new JLabel("PlanId:"));
-    panel.add(planIdField);
+    panel.add(planIDField);
     panel.add(new JLabel("Password:"));
     panel.add(passwordField);
+    panel.add(new JLabel("Name:"));
+    panel.add(nameField);
     panel.add(new JLabel("Address:"));
     panel.add(addressField);
-    panel.add(new JLabel("PhoneNumber:"));
+    panel.add(new JLabel("Phone Number:"));
     panel.add(phoneField);
+    panel.add(new JLabel("Plan Type:"));
+    panel.add(planTypeComboBox);
+    panel.add(new JLabel("Number of Logins:"));
+    panel.add(numberOfLoginsField);
 
-    int result = JOptionPane.showConfirmDialog(null, panel, 
-             "Enter Member Details", JOptionPane.OK_CANCEL_OPTION);
+    int result = JOptionPane.showConfirmDialog(null, panel, "Enter Member Details", JOptionPane.OK_CANCEL_OPTION);
     if (result == JOptionPane.OK_OPTION) {
-       
-       String email = emailField.getText();
-       String planId = planIdField.getText();
-       String password = passwordField.getText();
-       String address = addressField.getText();
-       String phone = phoneField.getText();
+        String email = emailField.getText();
+        String planID = planIDField.getText();
+        String password = passwordField.getText();
+        String name = nameField.getText();
+        String address = addressField.getText();
+        String phone = phoneField.getText();
+        String planType = (String) planTypeComboBox.getSelectedItem();
+        String numberOfLogins = numberOfLoginsField.getText();
+        try {
+            String subscriptionQuery = "INSERT INTO subscription (planID, planType, logins) VALUES (?, ?, ?)";
+            PreparedStatement subscriptionStmt = connection.prepareStatement(subscriptionQuery);
+            subscriptionStmt.setString(1, planID);
+            subscriptionStmt.setString(2, planType);
+            subscriptionStmt.setString(3, numberOfLogins);
+            subscriptionStmt.executeUpdate();
+
+            String memberQuery = "INSERT INTO member (email, planID, password, name, address, phonenumber) VALUES (?, ?, ?, ?, ?, ?)";
+            PreparedStatement memberStmt = connection.prepareStatement(memberQuery);
+            memberStmt.setString(1, email);
+            memberStmt.setString(2, planID);
+            memberStmt.setString(3, password);
+            memberStmt.setString(4, name);
+            memberStmt.setString(5, address);
+            memberStmt.setString(6, phone);
+            memberStmt.executeUpdate();
+
+            JOptionPane.showMessageDialog(null, "New member added successfully!");
+        } catch (SQLIntegrityConstraintViolationException ex) {
+           
+            JOptionPane.showMessageDialog(null, "Duplicate entry for ID. Please use a unique ID.", "Integrity Constraint Violation", JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();
+        } catch (SQLException ex) {
+           
+            JOptionPane.showMessageDialog(null, "Database error: " + ex.getMessage(), "SQL Error", JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();
+        } catch (Exception ex) {
+           
+            JOptionPane.showMessageDialog(null, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();
+        }
     }
 }
+
 
 private void setStringOrNull(CallableStatement stmt, int parameterIndex, String value) throws SQLException {
     if (value == null || value.trim().isEmpty()) {
@@ -376,4 +419,6 @@ JComboBox<String> genreComboBox = new JComboBox<>(genreOptions);
     }
 }
 }
+
+
 
