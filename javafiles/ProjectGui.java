@@ -311,7 +311,7 @@ class MyFrameClass extends JFrame {
 		menuBar = new JMenuBar();
 		menu = new JMenu("Streams");
 		history = new JMenu("Streaming trend 24h");
-		topten = new JMenu("Top Ten");
+		topten = new JMenu("Top Ten / No Streams");
 		
 	    allMoviesSeries = new JMenu("Movies / Series");
 		allMembers = new JMenu("Members");
@@ -360,6 +360,11 @@ class MyFrameClass extends JFrame {
 					JOptionPane.ERROR_MESSAGE);
 		}
 		
+		
+		JMenuItem noStreamItem = new JMenuItem("Titles With 0 Streams");
+        topten.add(noStreamItem);
+        NoStreamHandler noHandler = new NoStreamHandler(connection, table,tableModel, scroller, this);
+        noStreamItem.addActionListener(noHandler);
 		
 		
 		JMenuItem recentStreams = new JMenuItem("Top Streams Today");
@@ -583,5 +588,4 @@ class MyFrameClass extends JFrame {
 	}
 
 }
-
 
