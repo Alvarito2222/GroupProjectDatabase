@@ -12,7 +12,6 @@ import javax.swing.table.TableCellRenderer;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.util.*;
 import java.util.Date;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -39,12 +38,11 @@ class MyFrameClass extends JFrame {
 	JMenu menu;
 	JMenu history;
 	JMenu editProfile;
-	JMenu topten; 
+	JMenu topten;
 	JMenu allMoviesSeries;
 	JMenu allMembers;
-	JMenuItem m1, m2, m3, m4, m5, m6, h1, e1;
+	JMenuItem m1, m2, m3, m4, m5, m6, m7, h1, e1;
 
-	
 	JPanel streamButtonPanel;
 	private JButton streamButton;
 	String role;
@@ -65,7 +63,7 @@ class MyFrameClass extends JFrame {
 	Connection connection;
 
 	MyFrameClass() {
-		setLayout(new BoxLayout(getContentPane(),BoxLayout.PAGE_AXIS));
+		setLayout(new BoxLayout(getContentPane(), BoxLayout.PAGE_AXIS));
 
 		try {
 			Class.forName(driver);
@@ -80,45 +78,43 @@ class MyFrameClass extends JFrame {
 		}
 
 		table = new JTable() {
-	        public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
-	            Component c = super.prepareRenderer(renderer, row, column);
-	            if (!isRowSelected(row)) {
-	                c.setBackground(row % 2 == 0 ? new Color(230, 230, 250) : new Color(245, 245, 255)); // Light row colors
-	                c.setForeground(Color.BLACK); // Text color
-	            } else {
-	                c.setBackground(new Color(173, 216, 230)); // Color when a row is selected
-	            }
-	            return c;
-	        }
-	    };
-	    
-	    JTableHeader tableHeader = table.getTableHeader();
-	    tableHeader.setBackground(new Color(173, 216, 230)); // Light header background
-	    tableHeader.setForeground(Color.BLACK); // Header text color
-	    
+			public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+				Component c = super.prepareRenderer(renderer, row, column);
+				if (!isRowSelected(row)) {
+					c.setBackground(row % 2 == 0 ? new Color(230, 230, 250) : new Color(245, 245, 255)); // Light row
+																											// colors
+					c.setForeground(Color.BLACK); // Text color
+				} else {
+					c.setBackground(new Color(173, 216, 230)); // Color when a row is selected
+				}
+				return c;
+			}
+		};
+
+		JTableHeader tableHeader = table.getTableHeader();
+		tableHeader.setBackground(new Color(173, 216, 230)); // Light header background
+		tableHeader.setForeground(Color.BLACK); // Header text color
+
 		tableModel = new DefaultTableModel();
 
 		scroller = new JScrollPane(table);
-		
+
 		scroller.getViewport().setBackground(new Color(230, 230, 250)); // Light viewport background
-		
+
 		table.setGridColor(new Color(173, 216, 230)); // Light grid lines
 
 		buttonPanel = new JPanel();
-		buttonPanel.setLayout(new BoxLayout(buttonPanel,BoxLayout.PAGE_AXIS));
+		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.PAGE_AXIS));
 		buttonPanel.setBackground(new Color(57, 100, 195)); // Match the loginPanel background
 		loginButton = new JButton("Login");
 		LoginHandler lhandler = new LoginHandler();
 		onHover mouseAdapter = new onHover();
 		loginButton.addActionListener(lhandler);
 		loginButton.addMouseListener(mouseAdapter);
-		
-		
+
 		streamButtonPanel = new JPanel();
 		streamButtonPanel.setVisible(false);
 
-
-		
 		loginButton.setPreferredSize(new Dimension(80, 25)); // Adjust width and height as needed
 
 		// Add the login button to the buttonPanel
@@ -130,7 +126,6 @@ class MyFrameClass extends JFrame {
 		buttonPanel.add(loginButton);
 		buttonPanel.add(add(Box.createRigidArea(new Dimension(5, 10))));
 
-
 		loginPanel = new JPanel();
 		idLabel = new JLabel("  User Id");
 		pwdLabel = new JLabel("  Password");
@@ -141,29 +136,27 @@ class MyFrameClass extends JFrame {
 		WindowHandler window = new WindowHandler();
 		this.addWindowListener(window);
 
-		loginPanel.setBackground(new Color( 57, 100, 195));
+		loginPanel.setBackground(new Color(57, 100, 195));
 
 		loginButton.setBackground(new Color(57, 100, 195));
 		loginButton.setForeground(Color.BLACK);
 		loginButton.setForeground(Color.WHITE);
 		loginButton.setBorder(javax.swing.BorderFactory.createEmptyBorder());
 
-
-
 		loginPanel.setLayout(new GridLayout(4, 1, 0, 5));
 
-		//STYLING
+		// STYLING
 
-		//setUndecorated(true);
+		// setUndecorated(true);
 
-		loginPanel.setPreferredSize(new Dimension(100,100));
+		loginPanel.setPreferredSize(new Dimension(100, 100));
 
 		idLabel.setHorizontalAlignment(JLabel.LEFT);
 		idLabel.setForeground(Color.WHITE);
 		idLabel.setFont(new Font("Tahoma", Font.BOLD, 20));
 		idField.setHorizontalAlignment(JTextField.CENTER);
 		idField.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		idField.setPreferredSize(new Dimension(20,20));
+		idField.setPreferredSize(new Dimension(20, 20));
 		idField.setBorder(javax.swing.BorderFactory.createEmptyBorder());
 		idField.setForeground(Color.WHITE);
 		idField.setBackground(new Color(69, 116, 222));
@@ -173,7 +166,7 @@ class MyFrameClass extends JFrame {
 		pwdLabel.setFont(new Font("Tahoma", Font.BOLD, 20));
 		pwdField.setHorizontalAlignment(JTextField.CENTER);
 		pwdField.setFont(new Font("Tahoma", Font.BOLD, 20));
-		pwdField.setPreferredSize(new Dimension(20,20));
+		pwdField.setPreferredSize(new Dimension(20, 20));
 		pwdField.setBorder(javax.swing.BorderFactory.createEmptyBorder());
 		pwdField.setForeground(Color.WHITE);
 		pwdField.setBackground(new Color(69, 116, 222));
@@ -183,13 +176,13 @@ class MyFrameClass extends JFrame {
 		loginPanel.add(idField);
 		loginPanel.add(pwdLabel);
 		loginPanel.add(pwdField);
-		
+
 		streamButton = new JButton("Stream");
 		streamButton.addActionListener(new ActionListener() {
-		    @Override
-		    public void actionPerformed(ActionEvent e) {
-		        streamSelectedMovie();
-		    }
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				streamSelectedMovie();
+			}
 		});
 
 		// Panel to hold both the loginPanel and loginButton
@@ -222,11 +215,12 @@ class MyFrameClass extends JFrame {
 		setVisible(true);
 	}
 
-	public class onHover extends MouseAdapter{
+	public class onHover extends MouseAdapter {
 
 		public void mouseEntered(MouseEvent e) {
 			loginButton.setForeground(new Color(69, 116, 222));
 		}
+
 		public void mouseExited(MouseEvent e) {
 			loginButton.setForeground(Color.WHITE);
 		}
@@ -234,8 +228,6 @@ class MyFrameClass extends JFrame {
 
 	// inner class for handling login
 	class LoginHandler implements ActionListener {
-
-		
 
 		public void actionPerformed(ActionEvent e) {
 			String id = idField.getText();
@@ -301,9 +293,8 @@ class MyFrameClass extends JFrame {
 
 		tk = Toolkit.getDefaultToolkit();
 		d = tk.getScreenSize();
-		setSize(d.width / 3 , d.height / 3);
+		setSize(d.width / 3, d.height / 3);
 		setLocation(d.width / 3, d.height / 3);
-
 
 		loginPanel.setVisible(false);
 		buttonPanel.setVisible(false);
@@ -312,15 +303,11 @@ class MyFrameClass extends JFrame {
 		menu = new JMenu("Streams");
 		history = new JMenu("Streaming trend 24h");
 		topten = new JMenu("Top Ten / No Streams");
-		
-	    allMoviesSeries = new JMenu("Movies / Series");
+
+		allMoviesSeries = new JMenu("Movies / Series");
 		allMembers = new JMenu("Members");
-		
 
 		StreamsMenuHandler streamsHandler = new StreamsMenuHandler(connection, table, tableModel, scroller, this);
-		
-		
-		
 
 		menu.setBorder(new CompoundBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.BLACK),
 				BorderFactory.createEmptyBorder(5, 5, 5, 5)));
@@ -330,7 +317,7 @@ class MyFrameClass extends JFrame {
 
 		topten.setBorder(new CompoundBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.BLACK),
 				BorderFactory.createEmptyBorder(5, 5, 5, 5)));
-		
+
 		allMoviesSeries.setBorder(new CompoundBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.BLACK),
 				BorderFactory.createEmptyBorder(5, 5, 5, 5)));
 
@@ -338,46 +325,39 @@ class MyFrameClass extends JFrame {
 				BorderFactory.createEmptyBorder(5, 5, 5, 5)));
 
 		JMenuItem menuItem = new JMenuItem("Streams");
-        menuItem.addActionListener(streamsHandler);
-        menu.add(menuItem);
-		
-		
+		menuItem.addActionListener(streamsHandler);
+		menu.add(menuItem);
+
 		JMenuItem noStreamItem = new JMenuItem("Titles With 0 Streams");
-        topten.add(noStreamItem);
-        NoStreamHandler noHandler = new NoStreamHandler(connection, table,tableModel, scroller, this);
-        noStreamItem.addActionListener(noHandler);
-		
-		
+		topten.add(noStreamItem);
+		NoStreamHandler noHandler = new NoStreamHandler(connection, table, tableModel, scroller, this);
+		noStreamItem.addActionListener(noHandler);
+
 		JMenuItem recentStreams = new JMenuItem("Top Streams Today");
-        history.add(recentStreams);
-        DailyMenuHandler dailyHandler = new DailyMenuHandler(connection, table,tableModel, scroller, this);
-        recentStreams.addActionListener(dailyHandler);
+		history.add(recentStreams);
+		DailyMenuHandler dailyHandler = new DailyMenuHandler(connection, table, tableModel, scroller, this);
+		recentStreams.addActionListener(dailyHandler);
 
-        JMenuItem topTenItem = new JMenuItem("Top Ten Streams");
-        topten.add(topTenItem);
-        TopTenHandler tenHandler = new TopTenHandler(connection, table,tableModel, scroller, this);
-        topTenItem.addActionListener(tenHandler);
-        
-        JMenuItem allMemberes = new JMenuItem("Show All Members");
-        allMembers.add(allMemberes);
-        AdminHandler adminHandler = new AdminHandler(connection,table,tableModel,scroller,this);
-        allMemberes.addActionListener(adminHandler);
-        
-        JMenuItem allMoviesandSeries = new JMenuItem("Show All Movies/Series");
-        allMoviesSeries.add(allMoviesandSeries);
-        allMoviesandSeries.addActionListener(adminHandler);
-        
-        
-        
-        
+		JMenuItem topTenItem = new JMenuItem("Top Ten Streams");
+		topten.add(topTenItem);
+		TopTenHandler tenHandler = new TopTenHandler(connection, table, tableModel, scroller, this);
+		topTenItem.addActionListener(tenHandler);
 
+		JMenuItem allMemberes = new JMenuItem("Show All Members");
+		allMembers.add(allMemberes);
+		AdminHandler adminHandler = new AdminHandler(connection, table, tableModel, scroller, this);
+		allMemberes.addActionListener(adminHandler);
+
+		JMenuItem allMoviesandSeries = new JMenuItem("Show All Movies/Series");
+		allMoviesSeries.add(allMoviesandSeries);
+		allMoviesandSeries.addActionListener(adminHandler);
 
 		menuBar.add(menu);
 		menuBar.add(history);
 		menuBar.add(topten);
 		menuBar.add(allMoviesSeries);
 		menuBar.add(allMembers);
-		
+
 		setJMenuBar(menuBar);
 
 		validate();
@@ -395,19 +375,19 @@ class MyFrameClass extends JFrame {
 
 		tk = Toolkit.getDefaultToolkit();
 		d = tk.getScreenSize();
-		setSize(d.width / 3 , d.height / 3);
+		setSize(d.width / 3, d.height / 3);
 		setLocation(d.width / 3, d.height / 3);
 
 		loginPanel.setVisible(false);
 		buttonPanel.setVisible(false);
-		
+
 		streamButtonPanel.add(streamButton);
 		streamButtonPanel.setVisible(true);
 
 		menuBar = new JMenuBar();
 		menu = new JMenu("Search By");
 		history = new JMenu("Streaming History");
-		editProfile = new JMenu("Edit Profile");		
+		editProfile = new JMenu("Edit Profile");
 
 		m1 = new JMenuItem("Title");
 		m2 = new JMenuItem("Genre");
@@ -415,8 +395,10 @@ class MyFrameClass extends JFrame {
 		m4 = new JMenuItem("Director");
 		m5 = new JMenuItem("Prequel/Sequel");
 		m6 = new JMenuItem("All");
+		m7 = new JMenuItem("Awards won");
 		h1 = new JMenuItem("View History");
 		e1 = new JMenuItem("Edit Profile");
+		
 
 		TitleMenuHandler titleHandler = new TitleMenuHandler(connection, table, tableModel, scroller, this);
 		GenreMenuHandler genreHandler = new GenreMenuHandler(connection, table, tableModel, scroller, this);
@@ -426,6 +408,7 @@ class MyFrameClass extends JFrame {
 				loggedInUserId);
 		SequelMenuHandler sequelHandler = new SequelMenuHandler(connection, table, tableModel, scroller, this);
 		AllKeywordHandler allHandler = new AllKeywordHandler(connection, table, tableModel, scroller, this);
+		AwardsHandler awardsHandler = new AwardsHandler(connection, table , tableModel , scroller, this);
 		EditProfileHandler editHandler = new EditProfileHandler(loggedInUserId, connection);
 
 		m1.addActionListener(titleHandler);
@@ -434,6 +417,7 @@ class MyFrameClass extends JFrame {
 		m4.addActionListener(directorHandler);
 		m5.addActionListener(sequelHandler);
 		m6.addActionListener(allHandler);
+		m7.addActionListener(awardsHandler);
 		h1.addActionListener(historyHandler);
 		e1.addActionListener(editHandler);
 
@@ -448,6 +432,8 @@ class MyFrameClass extends JFrame {
 		menu.add(m5);
 		menu.add(new JSeparator());
 		menu.add(m6);
+		menu.add(new JSeparator());
+		menu.add(m7);
 
 		history.add(h1);
 		editProfile.add(e1);
@@ -457,7 +443,7 @@ class MyFrameClass extends JFrame {
 
 		history.setBorder(new CompoundBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.BLACK),
 				BorderFactory.createEmptyBorder(5, 5, 5, 5)));
-		
+
 		editProfile.setBorder(new CompoundBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.BLACK),
 				BorderFactory.createEmptyBorder(5, 5, 5, 5)));
 
@@ -470,89 +456,89 @@ class MyFrameClass extends JFrame {
 		validate();
 		repaint();
 	}
-	
-	private void streamSelectedMovie() 
-	{
-	    int selectedRow = table.getSelectedRow();
-	    if (selectedRow >= 0) {
-	        String movieTitle = tableModel.getValueAt(selectedRow, 0).toString(); 
-	        JOptionPane.showMessageDialog(this, "Streaming: " + movieTitle);
-	        String userEmail = loggedInUserId; 
-	        insertIntoDatabase(movieTitle, userEmail);
-	    } 
-	    else 
-	    {
-	        JOptionPane.showMessageDialog(this, "Please select a movie to stream.");
-	    }
+
+	private void streamSelectedMovie() {
+		int selectedRow = table.getSelectedRow();
+		if (selectedRow >= 0) {
+			String movieTitle = tableModel.getValueAt(selectedRow, 0).toString();
+			JOptionPane.showMessageDialog(this, "Streaming: " + movieTitle);
+			String userEmail = loggedInUserId;
+			insertIntoDatabase(movieTitle, userEmail);
+		} else {
+			JOptionPane.showMessageDialog(this, "Please select a movie to stream.");
+		}
 	}
 
 	private void insertIntoDatabase(String movieTitle, String userEmail) {
-	    Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
+		Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
 
-	    Connection conn = null;
-	    PreparedStatement stmt1 = null;
-	    PreparedStatement stmt2 = null;
+		Connection conn = null;
+		PreparedStatement stmt1 = null;
+		PreparedStatement stmt2 = null;
 
-	    try {
-	        conn = DriverManager.getConnection(url, "alvaro", "groupProject1");
-	        conn.setAutoCommit(false); // Start transaction
-	        
-	        String timestamp = generateUniqueTimestampID();
+		try {
+			conn = DriverManager.getConnection(url, "alvaro", "groupProject1");
+			conn.setAutoCommit(false); // Start transaction
 
-	        // Insert into timestamp table
-	        String sqlTimestamp = "INSERT INTO timestamp (timeStampID, stream_datetime) VALUES (?, ?)";
-	        stmt1 = conn.prepareStatement(sqlTimestamp);
-	        stmt1.setString(1, timestamp); // timeStampID
-	        stmt1.setTimestamp(2, currentTimestamp);
-	        stmt1.executeUpdate();
+			String timestamp = generateUniqueTimestampID();
 
-	        // Insert into streams table
-	        String sqlStreams = "INSERT INTO streams (title, timeStampID, email) VALUES (?, ?, ?)";
-	        stmt2 = conn.prepareStatement(sqlStreams);
-	        stmt2.setString(1, movieTitle);
-	        stmt2.setString(2, timestamp); //timeStampID
-	        stmt2.setString(3, loggedInUserId);
-	        stmt2.executeUpdate();
+			// Insert into timestamp table
+			String sqlTimestamp = "INSERT INTO timestamp (timeStampID, stream_datetime) VALUES (?, ?)";
+			stmt1 = conn.prepareStatement(sqlTimestamp);
+			stmt1.setString(1, timestamp); // timeStampID
+			stmt1.setTimestamp(2, currentTimestamp);
+			stmt1.executeUpdate();
 
-	        conn.commit(); // Commit transaction
-	    } catch (SQLException e) {
-	        if (conn != null) {
-	            try {
-	                conn.rollback(); // Rollback transaction in case of error
-	            } catch (SQLException ex) {
-	                ex.printStackTrace();
-	            }
-	        }
-	        e.printStackTrace();
-	    } finally {
-	        // Clean-up
-	        try {
-	            if (stmt1 != null) stmt1.close();
-	            if (stmt2 != null) stmt2.close();
-	            if (conn != null) conn.close();
-	        } catch (SQLException ex) {
-	            ex.printStackTrace();
-	        }
-	    }
+			// Insert into streams table
+			String sqlStreams = "INSERT INTO streams (title, timeStampID, email) VALUES (?, ?, ?)";
+			stmt2 = conn.prepareStatement(sqlStreams);
+			stmt2.setString(1, movieTitle);
+			stmt2.setString(2, timestamp); // timeStampID
+			stmt2.setString(3, loggedInUserId);
+			stmt2.executeUpdate();
+
+			conn.commit(); // Commit transaction
+		} catch (SQLException e) {
+			if (conn != null) {
+				try {
+					conn.rollback(); // Rollback transaction in case of error
+				} catch (SQLException ex) {
+					ex.printStackTrace();
+				}
+			}
+			e.printStackTrace();
+		} finally {
+			// Clean-up
+			try {
+				if (stmt1 != null)
+					stmt1.close();
+				if (stmt2 != null)
+					stmt2.close();
+				if (conn != null)
+					conn.close();
+			} catch (SQLException ex) {
+				ex.printStackTrace();
+			}
+		}
 	}
 
 	private String generateUniqueTimestampID() {
-	    // Format the current time to a specific pattern
-	    SimpleDateFormat dateFormat = new SimpleDateFormat("HHmmssS");
-	    String timeComponent = dateFormat.format(new Date());
+		// Format the current time to a specific pattern
+		SimpleDateFormat dateFormat = new SimpleDateFormat("HHmmssS");
+		String timeComponent = dateFormat.format(new Date());
 
-	    // Ensure the string is exactly 7 characters long
-	    if (timeComponent.length() > 7) {
-	        timeComponent = timeComponent.substring(0, 7);
-	    } else {
-	        while (timeComponent.length() < 7) {
-	            // Append a random digit if the string is shorter than 7 characters
-	            timeComponent += ThreadLocalRandom.current().nextInt(0, 10);
-	        }
-	    }
+		// Ensure the string is exactly 7 characters long
+		if (timeComponent.length() > 7) {
+			timeComponent = timeComponent.substring(0, 7);
+		} else {
+			while (timeComponent.length() < 7) {
+				// Append a random digit if the string is shorter than 7 characters
+				timeComponent += ThreadLocalRandom.current().nextInt(0, 10);
+			}
+		}
 
-	    System.out.println(timeComponent);
-	    return timeComponent;
+		System.out.println(timeComponent);
+		return timeComponent;
 	}
 
 	// inner class for handling window event
