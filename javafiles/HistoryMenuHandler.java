@@ -42,7 +42,7 @@ class HistoryMenuHandler implements ActionListener {
 		}
 
 		try {
-			String query = "SELECT * FROM streams WHERE email = ?";
+			String query = "SELECT * FROM streams NATURAL JOIN timestamp WHERE email = ?";
 			PreparedStatement statement = connection.prepareStatement(query);
 			statement.setString(1, loggedInUserId);
 
