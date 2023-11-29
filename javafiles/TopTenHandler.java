@@ -39,6 +39,7 @@ public class TopTenHandler implements ActionListener
                         + "WHERE stream_datetime > NOW() - INTERVAL 30 DAY\r\n"
                         + "GROUP BY title\r\n"
                         + "ORDER BY COUNT(title) DESC\r\n"
+                        + "LIMIT 10"
                         ;
                 PreparedStatement statement = connection.prepareStatement(query);
 
