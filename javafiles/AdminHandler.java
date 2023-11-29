@@ -1,5 +1,9 @@
 
 import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
@@ -209,19 +213,30 @@ public class AdminHandler  implements ActionListener {
         int selectedRow = table.getSelectedRow();
         if (selectedRow >= 0) {
         	Object movieSerieName = model.getValueAt(selectedRow, 0); // Assuming the first column is the member ID
-            removeMember(movieSerieName);
+            removeMovie(movieSerieName);
             model.removeRow(selectedRow);
         }
     }
 
 
-
+    private void removeMovie(Object memberID) {
+        
+        try {
+            String query = "DELETE FROM video WHERE title = ?"; 
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setObject(1, memberID);
+            statement.executeUpdate();
+            statement.close();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 	 
 
 private void removeMember(Object memberID) {
     
     try {
-        String query = "DELETE FROM member WHERE id = ?"; 
+        String query = "DELETE FROM member WHERE email = ?"; 
         PreparedStatement statement = connection.prepareStatement(query);
         statement.setObject(1, memberID);
         statement.executeUpdate();
@@ -232,55 +247,99 @@ private void removeMember(Object memberID) {
 }
 
 private void addNewMember() {
-    JTextField nameField = new JTextField(10);
     JTextField emailField = new JTextField(10);
-    JTextField ageField = new JTextField(10);
+    JTextField planIdField = new JTextField(10);
+    JTextField passwordField = new JTextField(10);
+    JTextField addressField = new JTextField(10);
+    JTextField phoneField = new JTextField(10);
 
-    JPanel panel = new JPanel();
-    panel.add(new JLabel("Name:"));
-    panel.add(nameField);
-    panel.add(Box.createHorizontalStrut(15)); 
+    JPanel panel = new JPanel(new GridLayout(0,1));
+   
+
+    // Adding each component to the panel with constraints
     panel.add(new JLabel("Email:"));
     panel.add(emailField);
-    panel.add(Box.createHorizontalStrut(15));
-    panel.add(new JLabel("Age:"));
-    panel.add(ageField);
+    panel.add(new JLabel("PlanId:"));
+    panel.add(planIdField);
+    panel.add(new JLabel("Password:"));
+    panel.add(passwordField);
+    panel.add(new JLabel("Address:"));
+    panel.add(addressField);
+    panel.add(new JLabel("PhoneNumber:"));
+    panel.add(phoneField);
 
     int result = JOptionPane.showConfirmDialog(null, panel, 
              "Enter Member Details", JOptionPane.OK_CANCEL_OPTION);
     if (result == JOptionPane.OK_OPTION) {
        
-        // String name = nameField.getText();
-        // String email = emailField.getText();
-        // String age = ageField.getText();
-        // Add new member to the database
+       String email = emailField.getText();
+       String planId = planIdField.getText();
+       String password = passwordField.getText();
+       String address = addressField.getText();
+       String phone = phoneField.getText();
     }
 }
 
 private void addNewMovie() {
     JTextField titleField = new JTextField(10);
+    JTextField releaseDateField = new JTextField(10);
     JTextField genreField = new JTextField(10);
-    JTextField yearField = new JTextField(10);
+    JTextField hyperLinkField = new JTextField(10);
+    JTextField castIdField = new JTextField(10);
+    JTextField directorIdField = new JTextField(10);
+    JTextField prequelField = new JTextField(10);
+    JTextField sequelField = new JTextField(10);
+    JTextField castNameField = new JTextField(10);
+    JTextField castPositionField = new JTextField(10);
+    JTextField castProvinceField = new JTextField(10);
+    JTextField castCountryField = new JTextField(10);
 
-    JPanel panel = new JPanel();
-    panel.add(new JLabel("Title:"));
-    panel.add(titleField);
-    panel.add(Box.createHorizontalStrut(15)); // a spacer
-    panel.add(new JLabel("Genre:"));
-    panel.add(genreField);
-    panel.add(Box.createHorizontalStrut(15)); // a spacer
-    panel.add(new JLabel("Year:"));
-    panel.add(yearField);
+    JPanel panel = new JPanel(new GridLayout(0,1));
 
-    int result = JOptionPane.showConfirmDialog(null, panel, 
-             "Enter Movie Details", JOptionPane.OK_CANCEL_OPTION);
+    // Add components to the panel using GridBagConstraints
+   panel.add(new JLabel("Title:"));
+   panel.add(titleField);
+   panel.add(new JLabel("Release Date:"));
+   panel.add(releaseDateField);
+   panel.add(new JLabel("Genre:"));
+   panel.add(genreField);
+   panel.add(new JLabel("HyperLink:"));
+   panel.add(hyperLinkField);
+   panel.add(new JLabel("Cast Id:"));
+   panel.add(castIdField);
+   panel.add(new JLabel("Director Id:"));
+   panel.add(directorIdField);
+   panel.add(new JLabel("Prequel Title:"));
+   panel.add(prequelField);
+   panel.add(new JLabel("Sequel Title:"));
+   panel.add(sequelField);
+   panel.add(new JLabel("Cast Name:"));
+   panel.add(castNameField);
+   panel.add(new JLabel("Cast Position:"));
+   panel.add(castPositionField);
+   panel.add(new JLabel("Cast Province:"));
+   panel.add(castProvinceField);
+   panel.add(new JLabel("Cast Country:"));
+   panel.add(castCountryField);
+
+    int result = JOptionPane.showConfirmDialog(null, panel, "Enter Movie Details", JOptionPane.OK_CANCEL_OPTION);
     if (result == JOptionPane.OK_OPTION) {
-    
-        // String title = titleField.getText();
-        // String genre = genreField.getText();
-        // String year = yearField.getText();
-        // Add new movie to the database
+        
+        String title = titleField.getText();
+        String releaseDate = releaseDateField.getText();
+        String genre = genreField.getText();
+        String hyperlink = hyperLinkField.getText();
+        String castId = castIdField.getText();
+        String directorId = directorIdField.getText();
+        String prequel = prequelField.getText();
+        String sequel =sequelField.getText();
+        String castName = castNameField.getText();
+        String castPosition = castPositionField.getText();
+        String castProvince = castProvinceField.getText();
+        String castCountry = castCountryField.getText();
+        
     }
 }
+
 }
 
