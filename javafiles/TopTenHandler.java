@@ -34,12 +34,12 @@ public class TopTenHandler implements ActionListener
     public void actionPerformed(ActionEvent e) 
     {
             try {
-                String query = "SELECT title, COUNT(title) AS stream_count\r\n"
-                		+ "FROM streams NATURAL JOIN timestamp\r\n"
-                		+ "WHERE stream_datetime > NOW() - INTERVAL 30 DAY\r\n"
-                		+ "GROUP BY title\r\n"
-                		+ "ORDER BY stream_count DESC\r\n"
-                		+ "LIMIT 5;";
+               String query = "SELECT title, genre, release_date, hyperlink, COUNT(title) AS stream_count\r\n"
+                        + "FROM streams NATURAL JOIN timestamp NATURAL JOIN video\r\n"
+                        + "WHERE stream_datetime > NOW() - INTERVAL 30 DAY\r\n"
+                        + "GROUP BY title\r\n"
+                        + "ORDER BY COUNT(title) DESC\r\n"
+                        ;
                 PreparedStatement statement = connection.prepareStatement(query);
 
                 ResultSet resultSet = statement.executeQuery();
