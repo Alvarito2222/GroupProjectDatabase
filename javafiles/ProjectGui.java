@@ -1,6 +1,4 @@
 
-
-
 import java.awt.Color;
 import java.sql.*;
 import java.text.SimpleDateFormat;
@@ -43,7 +41,7 @@ class MyFrameClass extends JFrame {
 	JMenu allMoviesSeries;
 	JMenu allMembers;
 	JMenu loginOut;
-	JMenuItem m1, m2, m3, m4, m5, m6, m7, h1, e1, loginOutConfirm;
+	JMenuItem m1, m2, m3, m4, m5, m6, m7, h1, h2, e1, loginOutConfirm;
 
 	JPanel streamButtonPanel;
 	private JButton streamButton;
@@ -465,6 +463,7 @@ class MyFrameClass extends JFrame {
 		m6 = new JMenuItem("All");
 		m7 = new JMenuItem("Awards won");
 		h1 = new JMenuItem("View History");
+		h2 = new JMenuItem("Unstreamed Videos");
 		e1 = new JMenuItem("Edit Profile");
 		loginOut = new JMenu("Login Out");
 		loginOutConfirm = new JMenuItem("Confirm Log Out?");
@@ -515,6 +514,10 @@ class MyFrameClass extends JFrame {
 		h1.setBackground(new Color(69, 116, 222));
 		h1.setBorder(javax.swing.BorderFactory.createEmptyBorder());
 		h1.setFont(new Font("Tahoma", Font.BOLD, 12));
+		h2.setForeground(Color.WHITE);
+		h2.setBackground(new Color(69, 116, 222));
+		h2.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+		h2.setFont(new Font("Tahoma", Font.BOLD, 12));
 		e1.setForeground(Color.WHITE);
 		e1.setBackground(new Color(69, 116, 222));
 		e1.setBorder(javax.swing.BorderFactory.createEmptyBorder());
@@ -543,7 +546,9 @@ class MyFrameClass extends JFrame {
 		AwardsHandler awardsHandler = new AwardsHandler(connection, table, tableModel, scroller, this);
 		EditProfileHandler editHandler = new EditProfileHandler(loggedInUserId, connection);
 		LoginOutHandler logHandler = new LoginOutHandler(connection, table, tableModel, scroller, this, loggedInUserId);
-
+		UserUnstreamedHandler unstreamedHandler = new UserUnstreamedHandler(connection, table, tableModel, scroller, this,
+				loggedInUserId);
+		
 		m1.addActionListener(titleHandler);
 		m2.addActionListener(genreHandler);
 		m3.addActionListener(actorHandler);
@@ -552,6 +557,7 @@ class MyFrameClass extends JFrame {
 		m6.addActionListener(allHandler);
 		m7.addActionListener(awardsHandler);
 		h1.addActionListener(historyHandler);
+		h2.addActionListener(unstreamedHandler);
 		e1.addActionListener(editHandler);
 		loginOutConfirm.addActionListener(logHandler);
 
@@ -570,6 +576,8 @@ class MyFrameClass extends JFrame {
 		menu.add(m7);
 
 		history.add(h1);
+		history.add(new JSeparator());
+		history.add(h2);
 		editProfile.add(e1);
 		loginOut.add(loginOutConfirm);
 
