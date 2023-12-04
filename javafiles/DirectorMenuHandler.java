@@ -1,8 +1,13 @@
 
 
+	
 import java.awt.BorderLayout;
+import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.net.URI;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -38,13 +43,13 @@ class DirectorMenuHandler implements ActionListener {
 
 		int optionChosen = JOptionPane.showConfirmDialog(null, message, "Search by Director",
 				JOptionPane.OK_CANCEL_OPTION);
-		
+
 		model.setRowCount(0);
 		model.setColumnCount(0);
 		String searchText = searchField.getText();
 
 		if (optionChosen == JOptionPane.OK_OPTION && !searchText.isEmpty()) {
-			
+
 			try {
 				String query = "SELECT VD.title, name, genre, release_date, hyperlink FROM videodirector VD NATURAL JOIN cast_director JOIN video ON VD.title = video.title WHERE position = 'Director' AND name LIKE ?";
 				PreparedStatement statement = connection.prepareStatement(query);
@@ -75,6 +80,8 @@ class DirectorMenuHandler implements ActionListener {
 				// Set the model on the table and update the scroll pane if needed
 				table.setModel(model);
 				table.setFillsViewportHeight(true);
+				table.getColumnModel().getColumn(4).setCellRenderer(new HyperlinkCellRenderer());
+                addHyperlinkListener(table);
 
 				scroller.setViewportView(table);
 
@@ -85,4 +92,24 @@ class DirectorMenuHandler implements ActionListener {
 			}
 		}
 	}
+	private void addHyperlinkListener(JTable table) {
+        table.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                int row = table.rowAtPoint(e.getPoint());
+                int column = table.columnAtPoint(e.getPoint());
+
+                if (column == 4) { 
+                    Object value = table.getValueAt(row, column);
+                    if (value instanceof String && ((String) value).startsWith("http")) {
+                        try {
+                            Desktop.getDesktop().browse(new URI((String) value));
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                }
+            }
+        });
+    }
+
 }
