@@ -1,7 +1,13 @@
 
+
+
 import java.awt.BorderLayout;
+import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.net.URI;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -71,6 +77,8 @@ public class AwardsHandler implements ActionListener {
 				// Set the model on the table and update the scroll pane if needed
 				table.setModel(model);
 				table.setFillsViewportHeight(true);
+				table.getColumnModel().getColumn(3).setCellRenderer(new HyperlinkCellRenderer());
+                addHyperlinkListener(table);
 
 				myFrameClass.getContentPane().add(scroller, BorderLayout.CENTER);
 
@@ -82,5 +90,25 @@ public class AwardsHandler implements ActionListener {
 				JOptionPane.showMessageDialog(null, ex.getMessage(), "Query error!", JOptionPane.ERROR_MESSAGE);
 			}
 		}
+	
+	private void addHyperlinkListener(JTable table) {
+        table.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                int row = table.rowAtPoint(e.getPoint());
+                int column = table.columnAtPoint(e.getPoint());
+
+                if (column == 3) { // Replace with the actual index of your hyperlink column
+                    Object value = table.getValueAt(row, column);
+                    if (value instanceof String && ((String) value).startsWith("http")) {
+                        try {
+                            Desktop.getDesktop().browse(new URI((String) value));
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                }
+            }
+        });
+    }
 	}
 
