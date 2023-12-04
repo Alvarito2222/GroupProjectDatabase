@@ -99,7 +99,7 @@ class ActorMenuHandler implements ActionListener {
                 int row = table.rowAtPoint(e.getPoint());
                 int column = table.columnAtPoint(e.getPoint());
 
-                if (column == 4) { // Replace with the actual index of your hyperlink column
+                if (column == 4) { 
                     Object value = table.getValueAt(row, column);
                     if (value instanceof String && ((String) value).startsWith("http")) {
                         try {
