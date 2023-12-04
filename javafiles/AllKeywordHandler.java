@@ -1,7 +1,10 @@
-
 import java.awt.BorderLayout;
+import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.net.URI;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -39,12 +42,12 @@ class AllKeywordHandler implements ActionListener {
 				JOptionPane.OK_CANCEL_OPTION);
 
 		String searchText = searchField.getText();
-		
+
 		model.setRowCount(0);
 		model.setColumnCount(0);
-		
+
 		if (optionChosen == JOptionPane.OK_OPTION && !searchText.isEmpty()) {
-			
+
 			try {
 				String query = "Select V.title, V.genre, V.release_date, M.awards_won, V.hyperlink, CD.name AS Director_Name, DC.name AS Actor_Name "
                         + "From video V natural join videodirector VD Join cast_director CD on VD.cast_id = CD.cast_id "
@@ -82,6 +85,8 @@ class AllKeywordHandler implements ActionListener {
 				// Set the model on the table and update the scroll pane if needed
 				table.setModel(model);
 				table.setFillsViewportHeight(true);
+				table.getColumnModel().getColumn(4).setCellRenderer(new HyperlinkCellRenderer());
+                addHyperlinkListener(table);
 
 				myFrameClass.getContentPane().add(scroller, BorderLayout.CENTER);
 
@@ -94,4 +99,23 @@ class AllKeywordHandler implements ActionListener {
 			}
 		}
 	}
+	private void addHyperlinkListener(JTable table) {
+        table.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                int row = table.rowAtPoint(e.getPoint());
+                int column = table.columnAtPoint(e.getPoint());
+
+                if (column == 4) { // Replace with the actual index of your hyperlink column
+                    Object value = table.getValueAt(row, column);
+                    if (value instanceof String && ((String) value).startsWith("http")) {
+                        try {
+                            Desktop.getDesktop().browse(new URI((String) value));
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                }
+            }
+        });
+    }
 }
